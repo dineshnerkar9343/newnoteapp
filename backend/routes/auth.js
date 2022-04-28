@@ -6,6 +6,7 @@ const { find, findOne } = require('../models/User');
 const bcrypt = require('bcryptjs');  // hash function password
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = "youareawesome&";
+const fetchuser = require('../middleware/fetchuser')
 
 
 
@@ -113,6 +114,21 @@ res.json({authtoken})
 
 
 })
+
+
+// Route 3 : getuser
+
+router.post('/getuser', fetchuser, async(req,res)=>{
+  try{
+   userId = req.user.id
+     const user = await User.findById(userId).select("-password")
+     res.send(user);
+  }catch (error) {
+    console.log(error.mesage);
+       res.status(500).json({ errors: "some error occured" });
+    }
+})
+
 
 
 module.exports = router
