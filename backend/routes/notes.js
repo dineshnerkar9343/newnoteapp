@@ -59,19 +59,56 @@ router.put('/updatenote/:id', fetchuser, async(req,res)=>{
          if (description) { newNote.description = description};
          if (tag) {newNote.tag = tag};
 
-       let note = Note.findById(req.params.id)
+       let note = await Note.findById(req.params.id)
 
        if(!note) {return res.status(404).send("Note not found")}
 
+       if( note.user.toString() !== req.user.id){
+           return res.status(401).send("you are not allowed to update the note");
+       }
+
+       //update
+      note = await Note.findByIdAndUpdate(req.params.id, {$set: newNote}, {new:true})
+
+      res.json({note})
+
+       }catch (error) {
+        console.log(error.mesage);
+           res.status(500).json({ errors: "some error occured" });
+        }      
+
+})
+
+//Route 4: DALETE
+router.delete('/deletenote/:id', fetchuser, async(req,res) =>{
+
+try{
+
+let note = await Note.findById(req.params.id)
+
+if(!note){return res.status(401).send("not found")}
+
+if( note.user.toString() !== req.user.id){
+    return res.status(401).send("you are not allowed to delete the note");
+}
+
+  note = await Note.findByIdAndDelete(rea.params.id)
+  res.json({"sucess":"successfully deleted", note:note})
 
 
-     }catch (error) {
+
+
+}catch (error) {
         console.log(error.mesage);
            res.status(500).json({ errors: "some error occured" });
         }      
 
 
+
+
 })
+
+
 
 
 
