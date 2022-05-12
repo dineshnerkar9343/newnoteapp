@@ -1,9 +1,22 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import NoteContext from '../context/NoteContext'
+
+import { Note } from './Note';
+
+
 
 const Home = () => {
+  const context = useContext(NoteContext)
+
+const {notes, setNotes} = context;
+
   return (
   <>
-  <p>This is home</p>
+  
+    
+
+      <Note/>
+      
   </>
   )
 }
