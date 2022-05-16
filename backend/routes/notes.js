@@ -79,7 +79,7 @@ router.put('/updatenote/:id', fetchuser, async(req,res)=>{
 
 })
 
-//Route 4: DALETE
+//Route 4: DALETE NOTE
 router.delete('/deletenote/:id', fetchuser, async(req,res) =>{
 
 try{
@@ -96,21 +96,11 @@ if( note.user.toString() !== req.user.id){
   res.json({"sucess":"successfully deleted", note:note})
 
 
-
-
 }catch (error) {
         console.log(error.mesage);
            res.status(500).json({ errors: "some error occured" });
         }      
-
-
-
-
 })
-
-
-
-
 
 
 

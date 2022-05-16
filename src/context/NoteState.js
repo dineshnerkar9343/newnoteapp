@@ -9,6 +9,7 @@ const NoteState=(props)=>{
     const noteInitial = []
 const [notes, setNotes]= useState(noteInitial)
 
+//fetchnotes
 const getNote = async ()=>{
   const response = await fetch(`${host}/api/notes/fetchallnotes`,{
     method: 'GET',
@@ -18,7 +19,7 @@ const getNote = async ()=>{
     }
   });
 
-  const json = await response.json();
+  const json = await response.json()
   console.log(json);
   setNotes(json)
 
@@ -38,23 +39,10 @@ const addNote = async (title,description,tag)=>{
 
   });
 
-  const json = await response.json();
-
-  const note = {
-    "_id": "626a452096de1234a43ca1dd309",
-    "user": "626a41ab96de1a43ca1dd305",
-    "title": title,
-    "description": description,
-    "tag": tag,
-    "date": "2022-04-28T07:41:20.721Z",
-    "__v": 0
-  }
-
-setNotes(notes.concat(note))
+  const note = await response.json();
+  setNotes(notes.concat(note))
 
 }
-
-
 
 //update
 const editNote= async(id,title,description,tag)=>{
@@ -62,26 +50,28 @@ const editNote= async(id,title,description,tag)=>{
 
               //http://localhost:5000/api/notes/updatenote/626a498c96de1a43ca1dd30e
   const response = await fetch(`${host}/api/notes/updatenote/${id}`,{
-    method : 'POST',
+    method : 'PUT',
     headers : {
       'content-type': 'application/json',
       "auth-token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjI2YTQxYWI5NmRlMWE0M2NhMWRkMzA1In0sImlhdCI6MTY1MTEzMDkxNH0.RqKalUHoRTtFPY2gnwmaYE2ErjCySAS8aU2AQGJWucY" 
     },
     body: JSON.stringify({title,description,tag})
-
   });
+  const json = await response.json();
 
-  const json = response.json();
+  let newNotes = JSON.parse(JSON.stringify(notes))
+
   for (let index = 0; index < notes.length; index++) {
-    const element = notes[index];
+    const element = newNotes[index];
     if(element._id === id){
-    element.title = title;
-    element.description = description;
-    element.tag = tag;
+    newNotes[index].title = title;
+    newNotes[index].description = description;
+    newNotes[index].tag = tag;
+    break;
     }
     
   }
-
+setNotes(newNotes);
 }
 
 //delete

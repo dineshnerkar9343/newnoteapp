@@ -17,3 +17,7 @@ code {
 i{
   cursor: pointer;
 }
+
+.modal-content{
+  background-color: aqua;
+}
