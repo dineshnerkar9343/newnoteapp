@@ -1,15 +1,16 @@
 import React, { useContext, useEffect } from 'react'
 import NoteContext from '../context/NoteContext'
-
+// import { useNavigate } from 'react-router-dom'
 
 
 const About = () => {
-
+  // let navigate = useNavigate();
 
   return (
 <>
-<p>This is about page</p>
 </>
+// navigate("/login")
+
   )
 }
 

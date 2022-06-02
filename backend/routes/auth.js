@@ -4,10 +4,9 @@ const User = require('../models/User');
 const { body, validationResult } = require('express-validator');
 const { find, findOne } = require('../models/User');
 const bcrypt = require('bcryptjs');  // hash function password
-const jwt = require('jsonwebtoken');
+var jwt = require('jsonwebtoken');
 const JWT_SECRET = "youareawesome&";
 const fetchuser = require('../middleware/fetchuser')
-
 
 
 
@@ -16,9 +15,10 @@ router.post('/createuser',[
     //validations
     body('name','Enter valid name').isLength({min: 3}),
     body('email','Enter valid Email').isEmail(),
-    body('password','password must be of 8 charactors').isLength({min: 8})
+    body('password','password must be of 6 charactors').isLength({min: 6})
 
 ],async(req,res)=>{
+  let success = false;
 
   //error handling
   try{
@@ -30,7 +30,7 @@ router.post('/createuser',[
     // console.log(req.body);
      let user = await User.findOne({email: req.body.email});
      if(user){
-       return res.status(400).json({ errors: "user already exists" });
+       return res.status(400).json({ success, errors: "user already exists" });
      }
 
      //hash password generation
@@ -61,7 +61,8 @@ router.post('/createuser',[
   //   }) //////
   // })
   // console.log(authtoken)
-res.json({authtoken})
+  success = true;
+res.json({success, authtoken})
   }catch(error)
   {
      console.log(error.mesage);
@@ -77,23 +78,24 @@ router.post('/login',[
   body('password','enter valid password').exists()
 ], async(req, res)=>{
 
+  let success = false;
   const {email, password} = req.body;
 try{
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({ success, errors: errors.array() });
   }
 
   //user not exists
   let user = await User.findOne({email});
      if(!user){
-       return res.status(400).json({ errors: "user not exists" });
+       return res.status(400).json({success, errors: "user not exists" });
      }
 
 const passwordCompare = await bcrypt.compare(password, user.password);
 //password comparison
 if(!passwordCompare){
-  return res.status(400).json({ errors: "login credentials are invalid" });
+  return res.status(400).json({ success, errors: "login credentials are invalid" });
 }     
 
 const payload = {
@@ -103,7 +105,8 @@ const payload = {
 }
 
 const authtoken = jwt.sign(payload, JWT_SECRET)
-res.json({authtoken})
+success = true;
+res.json({success, authtoken})
 
 } catch (error) {
   console.log(error.mesage);

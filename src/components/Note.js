@@ -2,18 +2,26 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import NoteContext from '../context/NoteContext'
 import AddNote from './AddNote';
 import { Noteitem } from './Noteitem';
+import { useNavigate } from 'react-router-dom'   //extra added
+
 
 export const Note = () => {
 
     const context = useContext(NoteContext)
-
+    let navigate = useNavigate();  //extra added
     const ref = useRef(null);
     const refClose = useRef(null);
     const {notes, getNote, editNote} = context;
     const[note, setNote] = useState({ id:"", etitle:"", edescription:"", etag:"general"})
 
    useEffect(() => {
-     getNote()
+     if(localStorage.getItem('token')){  //extra added
+      getNote()
+     }
+     else{
+       navigate("/login")    //extra added
+     }
+
    },[])
 
    const updateNote = (currentNote) => {
@@ -49,7 +57,7 @@ export const Note = () => {
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 className="modal-title" id="exampleModalLabel">Update Note</h5>
                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
               </div>
               <div className="modal-body">
@@ -73,8 +81,6 @@ export const Note = () => {
         
       </form>
               
-
-
               </div>
               <div className="modal-footer">
                 <button type="button" ref={refClose} className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
