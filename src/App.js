@@ -10,18 +10,22 @@ import{
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import About from './components/About';
-import NoteState from './context/NoteState';
-import Alert from './components/Alert';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import HaproState from './context/HaproState';
+import HaboutState from './context/HaboutState';
+import HcourseState from './context/HcourseState';
 
 function App() {
   return (
     <>
-    <NoteState>
+    
+    <HaproState>
+      <HcourseState>
+      <HaboutState>
   <BrowserRouter>
   <Navbar/>
-  <Alert message="welcome to my app"/>
+
   <div className="container">
   <Routes>
     <Route exact path="/home" element={<Home/>}></Route>
@@ -32,7 +36,9 @@ function App() {
   </Routes>
   </div>
   </BrowserRouter>
-  </NoteState>
+  </HaboutState>
+  </HcourseState>
+  </HaproState>
 
     </>
   );

@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose;
 
 
-const NotesSchema = new Schema ({
+const HaboutsSchema = new Schema ({
 
 
     user: {
@@ -30,6 +30,15 @@ const NotesSchema = new Schema ({
         
     },
 
+    
+    tag2 : {
+        type: String,
+        default: "general"
+        
+    },
+
+
+
     date : {
         type: Date,
         default: Date.now
@@ -37,4 +46,4 @@ const NotesSchema = new Schema ({
 
 })
 
-module.exports = mongoose.model('notes',NotesSchema);
+module.exports = mongoose.model('habouts',HaboutsSchema);

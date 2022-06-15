@@ -1,0 +1,108 @@
+const express = require('express')
+const router = express.Router();
+const Hcourse = require('../models/Hcourse');
+const fetchuser = require('../middleware/fetchuser');
+const { body, validationResult } = require('express-validator');
+
+
+//Route 1: fetch all the hcourses
+router.get('/fetchallhcourses',fetchuser, async(req,res)=>{
+
+    try{
+    const hcourses = await Hcourse.find({user: req.user.id})
+    res.json(hcourses)
+    }catch (error) {
+        console.log(error.mesage);
+           res.status(500).json({ errors: "some error occured" });
+        }      
+
+})
+
+//Route 2: create or add hcourses
+router.post('/addhcourse', fetchuser, [
+   body('title','enter valid title').isLength({min:3}),
+   body('description','enter valid description').isLength({min:3})
+], async (req,res) => {
+
+    try{
+    const {image, title, description, tag} = req.body;
+
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+const hcourse = new Hcourse({
+    image, title, description, tag, user: req.user.id
+})
+
+
+const savedHcourse = await hcourse.save()
+
+res.json(savedHcourse)
+    } catch (error) {
+        console.log(error.mesage);
+           res.status(500).json({ errors: "some error occured" });
+        }      
+
+})
+
+//Route 3: update hcourse
+router.put('/updatehcourse/:id', fetchuser, async(req,res)=>{
+     const {image, title, description, tag} = req.body;
+
+
+     try{
+         const newHcourse = {};
+         if(image){ newHcourse.image = image};
+         if(title){ newHcourse.title = title};
+         if (description) { newHcourse.description = description};
+         if (tag) {newHcourse.tag = tag};
+
+       let hcourse = await Hcourse.findById(req.params.id)
+
+       if(!hcourse) {return res.status(404).send("Hcourse not found")}
+
+       if( hcourse.user.toString() !== req.user.id){
+           return res.status(401).send("you are not allowed to update the hcourse");
+       }
+
+       //update
+      hcourse = await Hcourse.findByIdAndUpdate(req.params.id, {$set: newHcourse}, {new:true})
+
+      res.json({hcourse})
+
+       }catch (error) {
+        console.log(error.mesage);
+           res.status(500).json({ errors: "some error occured" });
+        }      
+
+})
+
+//Route 4: DALETE Hcourse
+router.delete('/deletehcourse/:id', fetchuser, async(req,res) =>{
+
+try{
+
+let hcourse = await Hcourse.findById(req.params.id)
+
+if(!hcourse){return res.status(401).send("not found")}
+
+if( hcourse.user.toString() !== req.user.id){
+    return res.status(401).send("you are not allowed to delete the hcourse");
+}
+
+  hcourse = await Hcourse.findByIdAndDelete(req.params.id)
+  res.json({"sucess":"successfully deleted", hcourse:hcourse})
+
+
+}catch (error) {
+        console.log(error.mesage);
+           res.status(500).json({ errors: "some error occured" });
+        }      
+})
+
+
+
+module.exports = router

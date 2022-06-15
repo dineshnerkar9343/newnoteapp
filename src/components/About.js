@@ -1,15 +1,16 @@
 import React, { useContext, useEffect } from 'react'
-import NoteContext from '../context/NoteContext'
-// import { useNavigate } from 'react-router-dom'
+import HaproContext from '../context/HaproContext'
+
 
 
 const About = () => {
-  // let navigate = useNavigate();
+ 
 
   return (
 <>
+welcome about page
 </>
-// navigate("/login")
+
 
   )
 }
